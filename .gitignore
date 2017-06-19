@@ -1,5 +1,6 @@
 volume_mapping.rsync
 volume_mapping.unison
+env.sh
 /openvpn/config/*
 /openvpn/out/*
 
