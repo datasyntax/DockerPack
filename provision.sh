@@ -47,16 +47,3 @@ docker network ls | grep "projects" 1>/dev/null 2>&1 || docker network create pr
 
 
 docker-compose up -d --build --force-recreate
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/api.proofpilot.tk.crt -O /etc/nginx/certs/api.proofpilot.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/api.proofpilot.tk.key -O /etc/nginx/certs/api.proofpilot.tk.key
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/lime.proofpilot.tk.crt -O /etc/nginx/certs/lime.proofpilot.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/lime.proofpilot.tk.key -O /etc/nginx/certs/lime.proofpilot.tk.key
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/public.proofpilot.tk.crt -O /etc/nginx/certs/public.proofpilot.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/public.proofpilot.tk.key -O /etc/nginx/certs/public.proofpilot.tk.key
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/admin.proofpilot.tk.crt -O /etc/nginx/certs/admin.proofpilot.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/admin.proofpilot.tk.key -O /etc/nginx/certs/admin.proofpilot.tk.key
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/dutchfilmersacademy.tk.crt -O /etc/nginx/certs/dutchfilmersacademy.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/dutchfilmersacademy.tk.key -O /etc/nginx/certs/dutchfilmersacademy.tk.key
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/fotovakschool.tk.crt -O /etc/nginx/certs/fotovakschool.tk.crt
-#docker exec vhost-proxy wget http://certs.datasyntax.tk/fotovakschool.tk.key -O /etc/nginx/certs/fotovakschool.tk.key
-#docker restart vhost-proxy

@@ -38,47 +38,6 @@ services:
     cap_add:
       - NET_ADMIN
 
-  rsync:
-    image: nabeken/docker-volume-container-rsync
-    container_name: rsync
-    restart: always
-    networks:
-      projects:
-        aliases:
-          - rsync.docker
-    ports:
-      - "${HOST_IP}:873:873"
-    environment:
-      - OWNER=root
-      - GROUP=root
-      - VOLUME=/projects
-    volumes:
-      - /projects
-#      - limesurvey-src:/projects/LimeSurvey
-#      - opencpu-src:/projects/OpenCPU
-#      - ppv3-src:/projects/ProofPilotV3
-#      - qjobber-src:/projects/QJobber
-#      - userv3-src:/projects/UserV3
-#      - adminv3-src:/projects/AdminV3
-#      - fegeneric-src:/projects/FEGeneric
-#      - fvs-src:/projects/FVS
-#      - edu-src:/projects/CENTERPARCS
-
-  unison:
-    image: eugenmayer/unison
-    container_name: unison
-    restart: always
-    networks:
-      projects:
-        aliases:
-          - unison.docker
-    environment:
-      "VOLUME": /projects
-#    volumes:
-#      - fvs-src:/projects/fvs
-#      - dfa-src:/projects/dfa
-#      - fvsbeta-src:/projects/fvsbeta
-
   dummy:
     build:
       context: images/maintenance
@@ -115,17 +74,6 @@ services:
 
 volumes:
   certificates:
-  limesurvey-src:
-  opencpu-src:
-  ppv3-src:
-  qjobber-src:
-  userv3-src:
-  adminv3-src:
-  fegeneric-src:
-  fvs-src:
-  dfa-src:
-  edu-src:
-  fvsbeta-src:
 
 networks:
   projects:
