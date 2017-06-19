@@ -1,0 +1,133 @@
+version: "3"
+services:
+
+  nginxproxy:
+    build:
+      context: images/nginx-proxy
+    image: datasyntax/nginx-proxy
+    container_name: vhost-proxy
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - nginxproxy.docker
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    ports:
+      - "${PROXY_HTTP_PORT:-80}:80"
+      - "${PROXY_HTTPS_PORT:-443}:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certificates:/etc/nginx/certs
+
+  dns:
+    image: andyshinn/dnsmasq
+    container_name: dns
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - dns.docker
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    ports:
+      - "${HOST_IP}:53:53/udp"
+    command: -S /docker/127.0.0.11 -A /proofpilot.tk/127.0.0.1  -A /fotovakschool.tk/127.0.0.1 -A /dutchfilmersacademy.tk/127.0.0.1
+    cap_add:
+      - NET_ADMIN
+
+  rsync:
+    image: nabeken/docker-volume-container-rsync
+    container_name: rsync
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - rsync.docker
+    ports:
+      - "${HOST_IP}:873:873"
+    environment:
+      - OWNER=root
+      - GROUP=root
+      - VOLUME=/projects
+    volumes:
+      - /projects
+#      - limesurvey-src:/projects/LimeSurvey
+#      - opencpu-src:/projects/OpenCPU
+#      - ppv3-src:/projects/ProofPilotV3
+#      - qjobber-src:/projects/QJobber
+#      - userv3-src:/projects/UserV3
+#      - adminv3-src:/projects/AdminV3
+#      - fegeneric-src:/projects/FEGeneric
+#      - fvs-src:/projects/FVS
+#      - edu-src:/projects/CENTERPARCS
+
+  unison:
+    image: eugenmayer/unison
+    container_name: unison
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - unison.docker
+    environment:
+      "VOLUME": /projects
+#    volumes:
+#      - fvs-src:/projects/fvs
+#      - dfa-src:/projects/dfa
+#      - fvsbeta-src:/projects/fvsbeta
+
+  dummy:
+    build:
+      context: images/maintenance
+    image: datasyntax/maintenance
+    container_name: dummy
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - dummy.docker
+    environment:
+      - MESSAGE="some custom message"
+      - PORT=80
+      - VIRTUAL_HOST=${MAINTENANCE_DOMAINS}
+
+  openvpn:
+    build:
+     context: images/openvpn
+    image: datasyntax/openvpn
+    container_name: openvpn
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - openvpn.docker
+    command: /usr/bin/run.sh
+    ports:
+       - "${HOST_IP}:1194:1194"
+    cap_add:
+       - NET_ADMIN
+    volumes:
+       - ./openvpn/config:/etc/openvpn
+       - ./openvpn/out:/tmp/out
+
+volumes:
+  certificates:
+  limesurvey-src:
+  opencpu-src:
+  ppv3-src:
+  qjobber-src:
+  userv3-src:
+  adminv3-src:
+  fegeneric-src:
+  fvs-src:
+  dfa-src:
+  edu-src:
+  fvsbeta-src:
+
+networks:
+  projects:
+    external: true
+

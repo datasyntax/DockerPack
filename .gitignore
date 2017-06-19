@@ -1,0 +1,12 @@
+volume_mapping.rsync
+volume_mapping.unison
+/openvpn/config/*
+/openvpn/out/*
+
+.*
+!.gitignore
+!.gitkeep
+!.htaccess
+!.sf
+!.dockerignore
+
