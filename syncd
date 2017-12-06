@@ -52,6 +52,8 @@ case $1 in
         echo "$DAEMON_NAME is already running."
         exit 1;
       fi
+      echo "Running sync on start"
+      eval $SYNCCOMMAND && echo Done.
       export WATCHCOMMAND
       export VERBOSE
       export LOGFILE
