@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+POSITIONAL=()
+for i in "$@"
+do
+case $i in
+    --volume-name=*)
+    VOLUME_NAME="${i#*=}"
+    shift # past argument=value
+    ;;
+    --volume-path=*)
+    VOLUME_PATH="${i#*=}"
+    shift # past argument=value
+    ;;
+    --type=*)
+    TYPE="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+          # unknown option
+    ;;
+esac
+done
+
+if [[ -z $VOLUME_NAME || -z $VOLUME_PATH || -z $TYPE ]]; then
+    echo "Required parameters --volume-name --volume-path and --type"
+    return
+fi
+
+# As a first step we create a volume
+docker volume ls | grep "${VOLUME_NAME}" 1>/dev/null 2>&1 || docker volume create "${VOLUME_NAME}"
+
+echo "volume name is $VOLUME_NAME"
