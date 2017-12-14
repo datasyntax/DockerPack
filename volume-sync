@@ -8,10 +8,6 @@ case $i in
     VOLUME_NAME="${i#*=}"
     shift # past argument=value
     ;;
-    --volume-path=*)
-    VOLUME_PATH="${i#*=}"
-    shift # past argument=value
-    ;;
     --type=*)
     TYPE="${i#*=}"
     shift # past argument=value
@@ -22,12 +18,72 @@ case $i in
 esac
 done
 
-if [[ -z $VOLUME_NAME || -z $VOLUME_PATH || -z $TYPE ]]; then
-    echo "Required parameters --volume-name --volume-path and --type"
-    return
+if [[ -z $VOLUME_NAME || -z $TYPE ]]; then
+    echo "Required parameters --volume-name and --type"
+    exit
 fi
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 
 # As a first step we create a volume
 docker volume ls | grep "${VOLUME_NAME}" 1>/dev/null 2>&1 || docker volume create "${VOLUME_NAME}"
+VOLUME_MAPPING="--mount src=$VOLUME_NAME,dst=/projects/$VOLUME_NAME"
 
-echo "volume name is $VOLUME_NAME"
+
+if [ $TYPE == 'rsync' ]
+then
+    VOLUME_MAPPING_FILE="$DIR/volume_mapping.rsync"
+    grep -q -- "${VOLUME_MAPPING}" $VOLUME_MAPPING_FILE || echo "${VOLUME_MAPPING}" >> $VOLUME_MAPPING_FILE
+    VOLUME_MOUNTED=`docker inspect -f '{{ .Mounts }}' rsync | grep "volume $VOLUME_NAME "`
+
+    if [ -z "$VOLUME_MOUNTED" ]
+    then
+        echo "Mounting volume"
+        docker rm -f rsync 1>/dev/null 2>&1 || true && \
+        docker run --detach --name rsync \
+                --restart always \
+                --network projects \
+                --network-alias rsync.docker \
+                --publish 873:873 \
+                --env OWNER=root \
+                --env GROUP=root \
+                --env VOLUME=/projects \
+                --mount dst=/projects \
+                $(< ${VOLUME_MAPPING_FILE}) \
+                nabeken/docker-volume-container-rsync
+        sleep 3
+    fi
+elif [ $TYPE == 'unison' ]
+then
+    VOLUME_MAPPING_FILE="$DIR/volume_mapping.unison"
+    grep -q -- "${VOLUME_MAPPING}" $VOLUME_MAPPING_FILE || echo "${VOLUME_MAPPING}" >> $VOLUME_MAPPING_FILE
+    VOLUME_MOUNTED=`docker inspect -f '{{ .Mounts }}' rsync | grep "volume $VOLUME_NAME "`
+
+    if [ -z "$VOLUME_MOUNTED" ]
+    then
+        echo "Mounting volume"
+        docker rm -f unison 1>/dev/null 2>&1 || true && \
+        docker run --detach --name unison --restart always \
+                --publish 5000:5000 \
+                --network projects \
+                --network-alias unison.docker \
+                --env VOLUME=/projects \
+                --volume /projects \
+                $(< ${VOLUME_MAPPING_FILE}) \
+                eugenmayer/unison
+        sleep 3
+    fi
+else
+    echo "Unknown sync type specified - $TYPE"
+    exit
+fi
+
+exit
+
