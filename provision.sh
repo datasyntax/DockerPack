@@ -34,14 +34,6 @@ case $i in
 esac
 done
 
-if [ "$(uname)" == "Darwin" ]; then
-    echo "Darwin detected"
-elif [ "$(expr substr $(uname -s) 1 5 2>/dev/null)" == "Linux" ]; then
-    echo "Linux detected"
-elif [ "$(expr substr $(uname -s) 1 6 2>/dev/null)" == "CYGWIN" ]; then
-    echo "Windows detected"
-fi
-
 # Create projects network if does not exist
 docker network ls | grep "projects" 1>/dev/null 2>&1 || docker network create projects
 
