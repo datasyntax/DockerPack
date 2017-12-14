@@ -33,8 +33,7 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     ports:
-      - "53:53"
-      - "53:53/udp"
+      - "${BIND_DNS_TO:-53}/udp"
     command: -S /docker/127.0.0.11 -A /proofpilot.tk/127.0.0.1  -A /fotovakschool.tk/127.0.0.1 -A /dutchfilmersacademy.tk/127.0.0.1
     cap_add:
       - NET_ADMIN
