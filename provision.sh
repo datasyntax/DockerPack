@@ -34,6 +34,10 @@ case $i in
 esac
 done
 
+FILTEREDPATH=`pwd -P`
+FILTEREDPATH=${FILTEREDPATH/\/mnt/}
+export FILTEREDPATH=$FILTEREDPATH
+
 # Create projects network if does not exist
 docker network ls | grep "projects" 1>/dev/null 2>&1 || docker network create projects
 
