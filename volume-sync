@@ -64,7 +64,7 @@ elif [ $TYPE == 'unison' ]
 then
     VOLUME_MAPPING_FILE="$DIR/volume_mapping.unison"
     grep -q -- "${VOLUME_MAPPING}" $VOLUME_MAPPING_FILE || echo "${VOLUME_MAPPING}" >> $VOLUME_MAPPING_FILE
-    VOLUME_MOUNTED=`docker inspect -f '{{ .Mounts }}' rsync | grep "volume $VOLUME_NAME "`
+    VOLUME_MOUNTED=`docker inspect -f '{{ .Mounts }}' unison | grep "volume $VOLUME_NAME "`
 
     if [ -z "$VOLUME_MOUNTED" ]
     then
