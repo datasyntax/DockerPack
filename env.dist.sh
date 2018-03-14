@@ -10,4 +10,4 @@
 export DNS_PORT_MAPPING="127.0.0.1:53:53"
 export OPENVPN_PORT_MAPPING="127.0.0.1:1194:1194"
 export MAINTENANCE_DOMAINS=sitenotfound.com
-
+export LOCAL_DOMAINS="-A /yourlocaldomain1.tk/127.0.0.1  -A /yourlocaldomain2.tk/127.0.0.1"

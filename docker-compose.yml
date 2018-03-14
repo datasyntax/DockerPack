@@ -35,7 +35,7 @@ services:
     ports:
       - "${DNS_PORT_MAPPING:-53}"
       - "${DNS_PORT_MAPPING:-53}/udp"
-    command: -S /docker/127.0.0.11 -A /proofpilot.tk/127.0.0.1  -A /fotovakschool.tk/127.0.0.1 -A /dutchfilmersacademy.tk/127.0.0.1
+    command: -S /docker/127.0.0.11 ${LOCAL_DOMAINS}
     cap_add:
       - NET_ADMIN
 
