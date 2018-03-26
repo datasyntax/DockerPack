@@ -77,7 +77,7 @@ then
                 --env VOLUME=/projects \
                 --volume /projects \
                 $(< ${VOLUME_MAPPING_FILE}) \
-                eugenmayer/unison
+                datasyntax/unison
         sleep 3
     fi
 else
