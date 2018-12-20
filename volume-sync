@@ -74,7 +74,7 @@ then
                 --publish 5000:5000 \
                 --network projects \
                 --network-alias unison.docker \
-                --env VOLUME=/projects \
+                --env UNISON_DIR=/projects \
                 --volume /projects \
                 $(< ${VOLUME_MAPPING_FILE}) \
                 datasyntax/unison
