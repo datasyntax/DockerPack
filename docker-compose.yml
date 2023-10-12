@@ -2,8 +2,6 @@ version: "3"
 services:
 
   nginxproxy:
-    build:
-      context: images/nginx-proxy
     image: datasyntax/nginx-proxy
     container_name: vhost-proxy
     restart: always
