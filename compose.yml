@@ -1,0 +1,80 @@
+version: "3"
+services:
+
+  nginxproxy:
+    image: datasyntax/nginx-proxy
+    container_name: vhost-proxy
+    restart: always
+    networks:
+      projects:
+        aliases:
+          - nginxproxy.docker
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    ports:
+      - "${PROXY_HTTP_PORT:-80}:80"
+      - "${PROXY_HTTPS_PORT:-443}:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certificates:/etc/nginx/certs
+
+#  dns:
+#    image: andyshinn/dnsmasq
+#    container_name: dns
+#    restart: always
+#    networks:
+#      projects:
+#        aliases:
+#          - dns.docker
+#    dns:
+#      - 8.8.8.8
+#      - 8.8.4.4
+##    ports:
+##      - "${DNS_PORT_MAPPING:-53}"
+##      - "${DNS_PORT_MAPPING:-53}/udp"
+#    command: -S /docker/127.0.0.11 ${LOCAL_DOMAINS}
+#    cap_add:
+#      - NET_ADMIN
+
+#  dummy:
+#    build:
+#      context: images/maintenance
+#    image: datasyntax/maintenance
+#    container_name: dummy
+#    restart: always
+#    networks:
+#      projects:
+#        aliases:
+#          - dummy.docker
+#    environment:
+#      - MESSAGE="some custom message"
+#      - PORT=80
+#      - VIRTUAL_HOST=${MAINTENANCE_DOMAINS}
+#
+#  openvpn:
+#    build:
+#     context: images/openvpn
+#    image: datasyntax/openvpn
+#    container_name: openvpn
+#    restart: always
+#    networks:
+#      projects:
+#        aliases:
+#          - openvpn.docker
+#    command: /usr/bin/run.sh
+#    ports:
+#       - "${OPENVPN_PORT_MAPPING:-1194}"
+#    cap_add:
+#       - NET_ADMIN
+#    volumes:
+#       - ${FILTEREDPATH}/openvpn/config:/etc/openvpn
+#       - ${FILTEREDPATH}/openvpn/out:/tmp/out
+
+volumes:
+  certificates:
+
+networks:
+  projects:
+    external: true
+

@@ -42,4 +42,4 @@ export FILTEREDPATH=$FILTEREDPATH
 docker network ls | grep "projects" 1>/dev/null 2>&1 || docker network create projects
 
 
-docker-compose up -d --build --force-recreate
+docker compose up -d --build --force-recreate
